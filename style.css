@@ -3,6 +3,9 @@
   padding: 0px;
   box-sizing: border-box;
 }
+*:focus {
+  outline: 0;
+}
 body {
   font-family: "Josefin", sans-serif;
   color: rgb(63, 60, 60);
@@ -33,7 +36,7 @@ svg {
 }
 .color h2 {
   font-size: 2rem;
-  cursor: pointer;
+  cursor: copy;
 }
 /* controls in color column */
 .controls {
@@ -45,8 +48,8 @@ svg {
   font-size: 2rem;
   padding: 0.5rem;
   margin: 2rem 0rem;
-  background-color: none;
-  border: none;
+  background-color: transparent;
+  border-style: none;
   cursor: pointer;
 }
 /* SLIDERS comming from the bottom */
@@ -60,10 +63,10 @@ svg {
   width: 80%;
   border-top-right-radius: 1rem;
   border-top-left-radius: 1rem;
-  pointer-events: none;
-  transform: translateY(100px);
+  /* pointer-events: none; */
+  /* transform: translateY(100px); */
   transition: all 0.5s ease-in-out;
-  opacity: 0;
+  /* opacity: 0; */
 }
 .sliders.active {
   opacity: 1;
@@ -81,6 +84,14 @@ svg {
   background-color: rgb(83, 78, 73);
   color: white;
   font-weight: bold;
+  cursor: pointer;
+}
+input[type="range"] {
+  appearance: none;
+  margin: 1rem 0rem;
+  width: 100%;
+  position: relative;
+  border-radius: 1rem;
   cursor: pointer;
 }
 /* PANEL at the bottom of the window */
