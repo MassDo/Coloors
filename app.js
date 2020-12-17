@@ -1,10 +1,13 @@
 //  ELEMENTS
-const colors = document.querySelectorAll(".color");
+const allColors = document.querySelectorAll(".color");
 const currentHex = document.querySelectorAll(".color h2");
 const sliders = document.querySelectorAll('.sliders input[type="range"]');
 //EVENT LISTENERS
+//slider hue brighness saturation hbs
 sliders.forEach((slider) => {
-  slider.addEventListener("input", hslControls);
+  slider.addEventListener("input", (e) => {
+    hbsControls(e, allColors);
+  });
 });
 // FUNCTIONS
 function checkTextContrast(color, textHeader) {
@@ -16,7 +19,7 @@ function checkTextContrast(color, textHeader) {
   }
   return textHeader;
 }
-function randomColor() {
+function randomColor(colors) {
   colors.forEach((color) => {
     const newColor = chroma.random();
     const hexText = color.children[0];
@@ -50,11 +53,28 @@ function colorizeSliders(color, hueInput, brightInput, satInput) {
   //Update  hue
   hueInput.style.backgroundImage = `linear-gradient(to right,rgb(204, 75, 75), rgb(204,204 ,75),rgb(75, 204, 75),rgb(75, 204, 204),rgb(75,75,204),rgb(204,75,204),rgb(204,75,75)`;
 }
-function hslControls(e) {
-  console.log(e);
-  // let color = chroma().set().set();
+function hbsControls(e, colors) {
+  const index =
+    e.target.dataset.hue || e.target.dataset.bright || e.target.dataset.sat;
+  // console.log(index);
+  // quand on modifie un slider on veut récupérer les 3 valeurs hbs du slider cliqué
+  // et l'attribuer a div.color parent
+  let sliders = e.target.parentNode.querySelectorAll("input");
+  const hue = sliders[0];
+  const brightness = sliders[1];
+  const saturation = sliders[2];
+  const currentColor = e.target.parentNode;
+  //on récupère le hex de color
+  const bgColor = colors[index].children[0].innerText;
+  // et on update la couleur avec hbs
+  let color = chroma(bgColor)
+    .set("hsl.s", saturation.value)
+    .set("hsl.l", brightness.value)
+    .set("hsl.h", hue.value);
+
+  colors[index].style.backgroundColor = color;
 }
 
 // main
 
-randomColor();
+randomColor(allColors);
