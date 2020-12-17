@@ -41,6 +41,27 @@ function randomColor(colors) {
     const saturation = sliders[2];
     colorizeSliders(newColor, hue, brightness, saturation);
   });
+  // update slider input to the new color
+  resetInputs();
+}
+function resetInputs() {
+  sliders.forEach((slider, index) => {
+    if (slider.name === "Hue") {
+      const hueColor = initialColors[slider.dataset.hue];
+      const hueValue = chroma(hueColor).hsl()[0];
+      slider.value = hueValue;
+    }
+    if (slider.name === "brightness") {
+      const brightnessColor = initialColors[slider.dataset.bright];
+      const brightnessValue = chroma(brightnessColor).hsl()[2];
+      slider.value = brightnessValue;
+    }
+    if (slider.name === "saturation") {
+      const saturationColor = initialColors[slider.dataset.sat];
+      const saturationValue = chroma(saturationColor).hsl()[1];
+      slider.value = saturationValue;
+    }
+  });
 }
 function colorizeSliders(color, hueInput, brightInput, satInput) {
   //Scale saturation
@@ -64,7 +85,6 @@ function colorizeSliders(color, hueInput, brightInput, satInput) {
 function hbsControls(e, colors) {
   const index =
     e.target.dataset.hue || e.target.dataset.bright || e.target.dataset.sat;
-  // console.log(index);
   // quand on modifie un slider on veut récupérer les 3 valeurs hbs du slider cliqué
   // et l'attribuer a div.color parent
   let sliders = e.target.parentNode.querySelectorAll("input");
