@@ -2,7 +2,12 @@
 const allColors = document.querySelectorAll(".color");
 const currentHex = document.querySelectorAll(".color h2");
 const sliders = document.querySelectorAll('.sliders input[type="range"]');
+const popup = document.querySelector(".copy-container");
+const adjustButtons = document.querySelectorAll(".adjust");
+const closeButtons = document.querySelectorAll(".close-adjustment");
+const slidersContainers = document.querySelectorAll(".sliders");
 let initialColors;
+
 //EVENT LISTENERS
 //slider hue brighness saturation hbs
 sliders.forEach((slider) => {
@@ -15,7 +20,47 @@ allColors.forEach((colorEl, index) => {
     updateTextUI(index);
   });
 });
+currentHex.forEach((hex) => {
+  hex.addEventListener("click", () => {
+    copyToClipboard(hex);
+  });
+});
+popup.addEventListener("transitionend", () => {
+  const popupBox = popup.children[0];
+  popupBox.classList.remove("active");
+  popup.classList.remove("active");
+});
+adjustButtons.forEach((button, index) => {
+  button.addEventListener("click", () => {
+    openAdjustmentPanel(index);
+  });
+});
+closeButtons.forEach((button, index) => {
+  button.addEventListener("click", () => {
+    closeAdjustmentPanel(index);
+  });
+});
+
 // FUNCTIONS
+function openAdjustmentPanel(index) {
+  slidersContainers[index].classList.toggle("active");
+}
+function closeAdjustmentPanel(index) {
+  slidersContainers[index].classList.remove("active");
+}
+function copyToClipboard(hex) {
+  const el = document.createElement("textarea");
+  el.value = hex.innerText;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand("copy");
+  document.body.removeChild(el);
+  // popup animation
+  const popupBox = popup.children[0];
+  popup.classList.add("active");
+  popupBox.classList.add("active");
+  console.log(popupBox);
+}
 function checkTextContrast(color, textHeader) {
   const luminance = chroma(color).luminance();
   if (luminance > 0.35) {
