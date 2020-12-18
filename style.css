@@ -35,7 +35,7 @@ svg {
   overflow: hidden;
 }
 .color h2 {
-  font-size: 2rem;
+  font-size: 3vw;
   cursor: copy;
 }
 /* controls in color column */
@@ -64,9 +64,9 @@ svg {
   border-top-right-radius: 1rem;
   border-top-left-radius: 1rem;
   pointer-events: none;
-  transform: translateY(100px);
-  transition: all 0.5s ease-in-out;
-  opacity: 0;
+  transform: translateY(300px);
+  transition: all 0.5s ease;
+  opacity: 1;
 }
 .sliders.active {
   opacity: 1;
@@ -135,7 +135,7 @@ input[type="range"] {
   align-items: center;
   pointer-events: none;
   opacity: 0;
-  transition: all 0.7s ease-in-out;
+  transition: all 0.7s ease;
 }
 .copy-container.active {
   opacity: 1;
@@ -151,11 +151,11 @@ input[type="range"] {
   border-radius: 2rem;
   min-width: 30%;
   min-height: 30vh;
-  transition: transform 0.7s ease-in;
-  transform: translateY(-2rem);
+  transition: transform 0.7s ease;
+  transform: translateY(-5rem);
 }
-.copy-popup.active {s ease;
-  transform: translateY(0rem);
+.copy-popup.active {
+  transform: translateY(0rem) scale(1.2);
 }
 .copy-popup h4 {
   font-size: 2rem;

@@ -4,11 +4,23 @@ const currentHex = document.querySelectorAll(".color h2");
 const sliders = document.querySelectorAll('.sliders input[type="range"]');
 const popup = document.querySelector(".copy-container");
 const adjustButtons = document.querySelectorAll(".adjust");
+const lockButtons = document.querySelectorAll(".lock");
 const closeButtons = document.querySelectorAll(".close-adjustment");
 const slidersContainers = document.querySelectorAll(".sliders");
+const generateButton = document.querySelector(".generate");
 let initialColors;
 
 //EVENT LISTENERS
+//Generate button
+generateButton.addEventListener("click", () => {
+  const colorAsync = window.setInterval(() => {
+    randomColor(allColors);
+  }, 80);
+  const inter = window.setTimeout(() => {
+    window.clearInterval(colorAsync);
+  }, 400);
+});
+
 //slider hue brighness saturation hbs
 sliders.forEach((slider) => {
   slider.addEventListener("input", (e) => {
@@ -20,6 +32,7 @@ allColors.forEach((colorEl, index) => {
     updateTextUI(index);
   });
 });
+// hex text copy and popup
 currentHex.forEach((hex) => {
   hex.addEventListener("click", () => {
     copyToClipboard(hex);
@@ -30,11 +43,13 @@ popup.addEventListener("transitionend", () => {
   popupBox.classList.remove("active");
   popup.classList.remove("active");
 });
+// open sliders menu
 adjustButtons.forEach((button, index) => {
   button.addEventListener("click", () => {
     openAdjustmentPanel(index);
   });
 });
+// close slider menu button
 closeButtons.forEach((button, index) => {
   button.addEventListener("click", () => {
     closeAdjustmentPanel(index);
@@ -49,6 +64,7 @@ function closeAdjustmentPanel(index) {
   slidersContainers[index].classList.remove("active");
 }
 function copyToClipboard(hex) {
+  // hack for copy to clipboard with textarea
   const el = document.createElement("textarea");
   el.value = hex.innerText;
   document.body.appendChild(el);
@@ -59,7 +75,6 @@ function copyToClipboard(hex) {
   const popupBox = popup.children[0];
   popup.classList.add("active");
   popupBox.classList.add("active");
-  console.log(popupBox);
 }
 function checkTextContrast(color, textHeader) {
   const luminance = chroma(color).luminance();
@@ -88,6 +103,13 @@ function randomColor(colors) {
   });
   // update slider input to the new color
   resetInputs();
+  // check for icons menu and lock contrast
+  adjustButtons.forEach((btn, index) => {
+    checkTextContrast(initialColors[index], btn);
+  });
+  lockButtons.forEach((btn, index) => {
+    checkTextContrast(initialColors[index], btn);
+  });
 }
 function resetInputs() {
   sliders.forEach((slider, index) => {
@@ -146,6 +168,8 @@ function hbsControls(e, colors) {
     .set("hsl.h", hue.value);
 
   colors[index].style.backgroundColor = color;
+  // update slide scale color
+  colorizeSliders(color, hue, brightness, saturation);
 }
 function updateTextUI(index) {
   const colorDiv = allColors[index];
@@ -162,5 +186,6 @@ function updateTextUI(index) {
 }
 
 // main
-
-randomColor(allColors);
+const colorAsync = window.setTimeout(() => {
+  randomColor(allColors);
+}, 1);
