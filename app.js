@@ -20,7 +20,6 @@ generateButton.addEventListener("click", () => {
     window.clearInterval(colorAsync);
   }, 400);
 });
-
 //slider hue brighness saturation hbs
 sliders.forEach((slider) => {
   slider.addEventListener("input", (e) => {
@@ -55,8 +54,28 @@ closeButtons.forEach((button, index) => {
     closeAdjustmentPanel(index);
   });
 });
+// lock icon
+lockButtons.forEach((lock, index) => {
+  lock.addEventListener("click", () => {
+    toggleLock(lock, index);
+  });
+});
 
 // FUNCTIONS
+function toggleLock(lock, index) {
+  const color = allColors[index];
+  if (color.classList.contains("locked")) {
+    color.classList.remove("locked");
+    lock.classList.add("unlocked");
+    lock.children[0].classList.remove("fa-lock");
+    lock.children[0].classList.add("fa-lock-open");
+  } else {
+    color.classList.add("locked");
+    lock.classList.remove("unlocked");
+    lock.children[0].classList.remove("fa-lock-open");
+    lock.children[0].classList.add("fa-lock");
+  }
+}
 function openAdjustmentPanel(index) {
   slidersContainers[index].classList.toggle("active");
 }
@@ -87,12 +106,19 @@ function checkTextContrast(color, textHeader) {
 }
 function randomColor(colors) {
   initialColors = [];
-  colors.forEach((color) => {
-    const newColor = chroma.random();
+  colors.forEach((color, index) => {
+    let newColor = chroma.random();
     const hexText = color.children[0];
-    color.style.backgroundColor = newColor; //new color to color div
-    hexText.innerText = newColor; //h2 text
-    initialColors.push(hexText.innerText); // save for reference of inital color used in hsbControls
+
+    // check if the color is locked
+    if (color.classList.contains("locked")) {
+      initialColors.push(hexText.innerText);
+    } else {
+      hexText.innerText = newColor; //h2 text
+      initialColors.push(hexText.innerText); // save for reference of inital color used in hsbControls
+    }
+    newColor = chroma(initialColors[index]);
+    color.style.backgroundColor = newColor;
     checkTextContrast(newColor, hexText);
     // get the input range  elements
     const sliders = color.querySelectorAll(".sliders input");
