@@ -8,7 +8,14 @@ const lockButtons = document.querySelectorAll(".lock");
 const closeButtons = document.querySelectorAll(".close-adjustment");
 const slidersContainers = document.querySelectorAll(".sliders");
 const generateButton = document.querySelector(".generate");
+const saveButton = document.querySelector("button.save");
+const savedContainer = document.querySelector(".save-container");
+const savedPopup = savedContainer.children[0];
+const closeSaveButton = document.querySelector(".close-save");
+const submitSave = document.querySelector(".submit-save");
+const paletteName = document.querySelector(".save-name");
 let initialColors;
+let palettesLocalStorage = [];
 
 //EVENT LISTENERS
 //Generate button
@@ -60,8 +67,53 @@ lockButtons.forEach((lock, index) => {
     toggleLock(lock, index);
   });
 });
+// Save button
+saveButton.addEventListener("click", () => {
+  popupSaveMenu();
+});
+// Close save menu X button without saving
+closeSaveButton.addEventListener("click", () => {
+  closeSavedPopup();
+});
+// Close save menu after saving
+submitSave.addEventListener("click", () => {
+  saveToLibrary();
+});
 
 // FUNCTIONS
+function saveToLocalStorage(nameText, colorArray) {
+  palettesLocalStorage = window.localStorage.getItem("palettes");
+  if (palettesLocalStorage) {
+    palettesLocalStorage = JSON.parse(palettesLocalStorage);
+    palettesLocalStorage.push([nameText, colorArray]);
+  } else {
+    palettesLocalStorage = [];
+    palettesLocalStorage.push([nameText, colorArray]);
+  }
+  window.localStorage.setItem("palettes", JSON.stringify(palettesLocalStorage));
+}
+function saveToLibrary() {
+  if (paletteName.value) {
+    saveToLocalStorage(paletteName.value, initialColors);
+    closeSavedPopup();
+  } else {
+    // animation si pas de text
+    paletteName.classList.add("incomplete");
+    paletteName.addEventListener("animationend", () => {
+      paletteName.classList.remove("incomplete");
+    });
+  }
+}
+function closeSavedPopup() {
+  paletteName.classList.remove("incomplete");
+  savedPopup.classList.remove("active");
+  savedContainer.classList.remove("active");
+  paletteName.value = "";
+}
+function popupSaveMenu() {
+  savedContainer.classList.add("active");
+  savedPopup.classList.add("active");
+}
 function toggleLock(lock, index) {
   const color = allColors[index];
   if (color.classList.contains("locked")) {

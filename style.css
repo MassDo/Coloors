@@ -33,8 +33,8 @@ svg {
   align-items: center;
   justify-content: space-evenly;
   position: relative;
-  overflow: hidden;
-  transition: all 0.5s ease;
+  /* overflow: hidden; */
+  transition: all 0.1s ease;
 }
 .color.locked {
   animation: 0.3s locked;
@@ -52,6 +52,10 @@ svg {
 .color h2 {
   font-size: 3vw;
   cursor: copy;
+  transition: all 0.3s ease;
+}
+.color h2:hover {
+  transform: scale(1.2);
 }
 /* controls in color column */
 .controls {
@@ -66,6 +70,11 @@ svg {
   background-color: transparent;
   border-style: none;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.adjust:hover,
+.lock:hover {
+  transform: scale(1.5);
 }
 /* SLIDERS comming from the bottom */
 .sliders {
@@ -79,16 +88,25 @@ svg {
   border-top-right-radius: 1rem;
   border-top-left-radius: 1rem;
   pointer-events: none;
-  transform: translateY(300px);
+  transform: translateY(300px) rotate(-90deg) scale(0.5);
   transition: all 0.5s ease;
   opacity: 1;
+  z-index: 10;
 }
 .sliders.active {
   opacity: 1;
   transform: translateY(0px);
   pointer-events: all;
+  /* parametres suivant a ajouter pour les téléphone */
+  /* faire une media queriy */
+  /* width: 90vw;
+  z-index: 10;
+  position: fixed;
+  bottom: 20vh;
+  left: 5vw; */
 }
-.sliders button {
+.sliders button,
+.close-save {
   position: absolute;
   top: 0%;
   right: 0%;
@@ -138,7 +156,8 @@ input[type="range"] {
 }
 /* POPUP CONTAINERS */
 /* background */
-.copy-container {
+.copy-container,
+.save-container {
   position: fixed;
   top: 0%;
   left: 0%;
@@ -151,13 +170,17 @@ input[type="range"] {
   pointer-events: none;
   opacity: 0;
   transition: all 0.7s ease;
+  z-index: 20;
 }
-.copy-container.active {
+.copy-container.active,
+.save-container.active {
   opacity: 1;
   pointer-events: all;
+  z-index: 20;
 }
 /* popup */
-.copy-popup {
+.copy-popup,
+.save-popup {
   background: white;
   display: flex;
   flex-direction: column;
@@ -169,15 +192,52 @@ input[type="range"] {
   transition: transform 0.7s ease;
   transform: translateY(-5rem);
 }
-.copy-popup.active {
+.copy-popup.active,
+.save-popup.active {
   transform: translateY(0rem) scale(1.2);
 }
 .copy-popup h4 {
   font-size: 2rem;
   padding: 2rem;
 }
+.save-popup h4 {
+  padding: 1rem;
+}
+.save-name {
+  border: none;
+  background-color: rgb(219, 219, 219);
+  border-radius: 0;
+  color: black;
+  padding: 1rem;
+  font-family: "Josefin", sans-serif;
+  font-size: 1rem;
+  max-width: 80%;
+}
+.save-name.incomplete {
+  animation: incomplete 0.3s ease-in-out;
+}
 
 /* ANIMATIONS */
+
+@keyframes incomplete {
+  from {
+    transform: translateX(0rem) scale(1);
+    background-color: rgb(224, 114, 114);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 @keyframes colorShake {
   from {
     transform: translateX(0rem) scale(1);
