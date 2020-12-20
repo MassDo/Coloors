@@ -18,7 +18,9 @@ const libraryButton = document.querySelector(".library");
 const libraryContainer = document.querySelector(".library-container");
 const libraryPopup = document.querySelector(".library-popup");
 const libraryClose = document.querySelector(".close-library");
+
 let initialColors;
+let paletteToLocalStorage = [];
 let palettesLocalStorage = [];
 
 //EVENT LISTENERS
@@ -87,13 +89,47 @@ submitSave.addEventListener("click", () => {
 libraryButton.addEventListener("click", (e) => {
   popupLibraryMenu();
   retrievePaletteFromLocal();
+  const miniPals = document.querySelectorAll(".select-minipal");
+  miniPals.forEach((miniPal) => {
+    miniPal.addEventListener("click", (ev) => {
+      displayMiniPal(ev);
+      closeLibrary();
+    });
+  });
 });
 // Library close button
 libraryClose.addEventListener("click", () => {
   closeLibrary();
 });
-
 // FUNCTIONS
+function displayMiniPal(ev) {
+  initialColors = [];
+  const paletteMin = ev.target.parentNode.querySelectorAll("div");
+  const allSliders = document.querySelectorAll(".sliders");
+  paletteMin.forEach((color, index) => {
+    initialColors.push(chroma(color.style.backgroundColor).hex());
+    allColors[index].style.backgroundColor = color.style.backgroundColor;
+    currentHex[index].innerText = chroma(color.style.backgroundColor).hex();
+    // quand on modifie un slider on veut récupérer les 3 valeurs hbs du slider cliqué
+    // et l'attribuer a div.color parent
+    // const sliders = allColors[index].querySelectorAll("input");
+    // // console.log(sliders[0].value);
+    // const hue = sliders[0];
+    // const brightness = sliders[1];
+    // const saturation = sliders[2];
+    // //on récupère le hex de color
+    // const bgColoor = currentHex[index].innerText;
+    // // et on update la couleur avec hbs
+    // let colorEnd = chroma(bgColoor)
+    //   .set("hsl.s", saturation.value)
+    //   .set("hsl.l", brightness.value)
+    //   .set("hsl.h", hue.value);
+
+    // // update slide scale color
+    // colorizeSliders(colorEnd, hue, brightness, saturation);
+    updateTextUI(index);
+  });
+}
 function retrievePaletteFromLocal() {
   const palettes = JSON.parse(window.localStorage.getItem("palettes"));
   clearAllPalette();
@@ -106,10 +142,18 @@ function retrievePaletteFromLocal() {
     palettesContainer.appendChild(title);
     palette.colorArray.forEach((color) => {
       const divColor = document.createElement("div");
-      divColor.innerText = color;
       divColor.style.backgroundColor = color;
       palettesContainer.appendChild(divColor);
     });
+    // ajouter bouton select et delete
+    const selectMiniPal = document.createElement("button");
+    selectMiniPal.classList.add("select-minipal");
+    selectMiniPal.innerHTML = '<i class="fas fa-check"></i>';
+    const deleteMiniPal = document.createElement("button");
+    deleteMiniPal.classList.add("delete-minipal");
+    deleteMiniPal.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    palettesContainer.appendChild(selectMiniPal);
+    palettesContainer.appendChild(deleteMiniPal);
   });
 }
 function clearAllPalette() {
@@ -126,6 +170,21 @@ function popupLibraryMenu() {
   libraryContainer.classList.add("active");
   libraryPopup.classList.add("active");
 }
+function saveToLibrary() {
+  if (paletteName.value) {
+    currentHex.forEach((hex) => {
+      paletteToLocalStorage.push(hex.innerText);
+    });
+    saveToLocalStorage(paletteName.value, paletteToLocalStorage);
+    closeSavedPopup();
+  } else {
+    // animation si pas de text
+    paletteName.classList.add("incomplete");
+    paletteName.addEventListener("animationend", () => {
+      paletteName.classList.remove("incomplete");
+    });
+  }
+}
 function saveToLocalStorage(nameText, colorArray) {
   palette = { nameText, colorArray };
   palettesLocalStorage = window.localStorage.getItem("palettes");
@@ -137,18 +196,6 @@ function saveToLocalStorage(nameText, colorArray) {
     palettesLocalStorage.push(palette);
   }
   window.localStorage.setItem("palettes", JSON.stringify(palettesLocalStorage));
-}
-function saveToLibrary() {
-  if (paletteName.value) {
-    saveToLocalStorage(paletteName.value, initialColors);
-    closeSavedPopup();
-  } else {
-    // animation si pas de text
-    paletteName.classList.add("incomplete");
-    paletteName.addEventListener("animationend", () => {
-      paletteName.classList.remove("incomplete");
-    });
-  }
 }
 function closeSavedPopup() {
   paletteName.classList.remove("incomplete");
@@ -203,6 +250,7 @@ function checkTextContrast(color, textHeader) {
   return textHeader;
 }
 function randomColor(colors) {
+  // colors is a nodelist
   initialColors = [];
   colors.forEach((color, index) => {
     let newColor = chroma.random();
@@ -255,6 +303,7 @@ function resetInputs() {
   });
 }
 function colorizeSliders(color, hueInput, brightInput, satInput) {
+  // Chroma color
   //Scale saturation
   const lowSat = color.set("hsl.s", 0);
   const highSat = color.set("hsl.s", 1);
