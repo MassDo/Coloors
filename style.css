@@ -206,6 +206,10 @@ input[type="range"] {
   transition: transform 0.7s ease;
   transform: translateY(-5rem);
   overflow: scroll;
+  scrollbar-width: none;
+}
+.library-popup::-webkit-scrollbar {
+  display: none;
 }
 .copy-popup.active,
 .save-popup.active,
@@ -222,7 +226,7 @@ input[type="range"] {
 .library-popup h4 {
   flex: 0;
   margin: 1rem 2rem;
-  font-size: 5vw;
+  font-size: 3vw;
   vertical-align: middle;
   text-align: center;
 }
@@ -380,9 +384,11 @@ input[type="range"] {
 @keyframes unlock {
   from {
     transform: translateX(0rem) scale(1);
+    color: rgb(189, 188, 188);
   }
   25% {
     transform: rotate(30deg);
+    color: rgb(46, 45, 45);
   }
   50% {
     transform: rotate(-30deg);
@@ -392,5 +398,22 @@ input[type="range"] {
   }
   to {
     transform: scale(1);
+  }
+}
+
+/* MEDIA */
+
+@media (max-width: 750px) {
+  .sliders.active {
+    opacity: 1;
+    transform: translateY(0px);
+    pointer-events: all;
+    /* parametres suivant a ajouter pour les téléphone */
+    /* faire une media queriy */
+    width: 90vw;
+    z-index: 10;
+    position: fixed;
+    bottom: 20vh;
+    left: 5vw;
   }
 }
