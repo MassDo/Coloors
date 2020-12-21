@@ -19,6 +19,8 @@ const libraryContainer = document.querySelector(".library-container");
 const libraryPopup = document.querySelector(".library-popup");
 const libraryClose = document.querySelector(".close-library");
 
+let allIndexToDelete = [];
+
 let initialColors;
 let paletteToLocalStorage = [];
 let palettesLocalStorage = [];
@@ -87,21 +89,47 @@ submitSave.addEventListener("click", () => {
 });
 // Library button
 libraryButton.addEventListener("click", (e) => {
+  allIndexToDelete = [];
   popupLibraryMenu();
   retrievePaletteFromLocal();
+  const allMinipal = document.querySelectorAll(".palettes-container");
   const miniPals = document.querySelectorAll(".select-minipal");
+  const miniPalsDel = document.querySelectorAll(".delete-minipal");
   miniPals.forEach((miniPal) => {
     miniPal.addEventListener("click", (ev) => {
       displayMiniPal(ev);
       closeLibrary();
     });
   });
+  // trash minipalette
+  miniPalsDel.forEach((del) => {
+    del.addEventListener("click", (ev) => {
+      deleteMiniPal(ev, allMinipal, allIndexToDelete);
+    });
+  });
 });
 // Library close button
 libraryClose.addEventListener("click", () => {
   closeLibrary();
+  updateLocalStorage();
 });
 // FUNCTIONS
+function updateLocalStorage() {
+  const local = JSON.parse(window.localStorage.getItem("palettes"));
+  local.splice(allIndexToDelete, allIndexToDelete.length);
+  window.localStorage.setItem("palettes", JSON.stringify(local));
+}
+function closeLibrary() {
+  libraryContainer.classList.remove("active");
+  libraryPopup.classList.remove("active");
+}
+function deleteMiniPal(ev, allMinipal, allIndexToDelete) {
+  // delete the div in UI
+  const index = ev.target.parentNode.classList[1];
+  allIndexToDelete.push(index);
+  console.log(allIndexToDelete);
+  allMinipal[index].parentElement.removeChild(allMinipal[index]);
+}
 function displayMiniPal(ev) {
   initialColors = [];
   const paletteMin = ev.target.parentNode.querySelectorAll("div");
@@ -133,9 +161,10 @@ function displayMiniPal(ev) {
 function retrievePaletteFromLocal() {
   const palettes = JSON.parse(window.localStorage.getItem("palettes"));
   clearAllPalette();
-  palettes.forEach((palette) => {
+  palettes.forEach((palette, index) => {
     const palettesContainer = document.createElement("div");
     palettesContainer.classList.add("palettes-container");
+    palettesContainer.classList.add(`${index}`);
     libraryPopup.appendChild(palettesContainer);
     const title = document.createElement("span");
     title.innerHTML = palette.nameText;
@@ -162,15 +191,12 @@ function clearAllPalette() {
     pal.parentNode.removeChild(pal);
   });
 }
-function closeLibrary() {
-  libraryContainer.classList.remove("active");
-  libraryPopup.classList.remove("active");
-}
 function popupLibraryMenu() {
   libraryContainer.classList.add("active");
   libraryPopup.classList.add("active");
 }
 function saveToLibrary() {
+  paletteToLocalStorage = [];
   if (paletteName.value) {
     currentHex.forEach((hex) => {
       paletteToLocalStorage.push(hex.innerText);
