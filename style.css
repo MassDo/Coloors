@@ -36,6 +36,9 @@ svg {
   /* overflow: hidden; */
   transition: all 0.1s ease;
 }
+.color.shadow {
+  animation: 0.5s shadow;
+}
 .color.locked {
   animation: 0.3s locked;
 }
@@ -395,6 +398,23 @@ input[type="range"] {
   }
   75% {
     transform: rotate(30deg);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes shadow {
+  from {
+    transform: translateX(0rem);
+  }
+  25% {
+    transform: rotate(2deg);
+  }
+  50% {
+    transform: rotate(-2deg);
+  }
+  75% {
+    transform: rotate(2deg);
   }
   to {
     transform: scale(1);

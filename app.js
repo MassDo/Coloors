@@ -34,6 +34,11 @@ generateButton.addEventListener("click", () => {
   const inter = window.setTimeout(() => {
     window.clearInterval(colorAsync);
   }, 400);
+  window.setTimeout(() => {
+    allColors.forEach((color) => {
+      color.classList.remove("shadow");
+    });
+  }, 400);
 });
 //slider hue brighness saturation hbs
 sliders.forEach((slider) => {
@@ -286,6 +291,7 @@ function randomColor(colors) {
     if (color.classList.contains("locked")) {
       initialColors.push(hexText.innerText);
     } else {
+      color.classList.add("shadow");
       hexText.innerText = newColor; //h2 text
       initialColors.push(hexText.innerText); // save for reference of inital color used in hsbControls
     }
